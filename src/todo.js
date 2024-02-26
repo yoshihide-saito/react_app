@@ -11,7 +11,7 @@ export default class Todo extends Component {
 
   onInput = (e) => {
     this.setState({
-      name: e.EventTarget.value
+      name: e.target.value
     })
   }
 
