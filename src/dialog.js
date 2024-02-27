@@ -13,6 +13,7 @@ export default class Todo extends Component {
       kenKana: '',
       kuKana: '',
       machiKana: '',
+      errorMessage: '',
     }
   }
 
@@ -29,6 +30,12 @@ export default class Todo extends Component {
     fetchJsonp(requestURL)
       .then(response => response.json())
       .then(data => {
+        if(data.results === null) {
+          this.setState({
+            errorMessage: '不正な郵便番号です'
+          })
+          return
+        }
         const {
           address1,
           address2,
@@ -44,12 +51,13 @@ export default class Todo extends Component {
           kenKana: kana1,
           kuKana: kana2,
           machiKana: kana3,
+          errorMessage: '',
         })
       })
   }
 
   render() {
-    const { ken, ku, machi, kenKana, kuKana, machiKana } = this.state
+    const { ken, ku, machi, kenKana, kuKana, machiKana, errorMessage } = this.state
     const targetOpen = () => {
       document.getElementById('dialog_ex1').showModal()
     }
@@ -71,9 +79,14 @@ export default class Todo extends Component {
           <input type='text' onInput={ this.onInput } />
           <button onClick={ this.searchAddress }>検索</button>
           <p>検索結果</p>
-          <p>{ ken } { kenKana}</p>
-          <p>{ ku } { kuKana}</p>
-          <p>{ machi } { machiKana}</p>
+          <div style={{ display: !errorMessage ? "block" : "none" }}>
+            <p>{ ken } { kenKana}</p>
+            <p>{ ku } { kuKana}</p>
+            <p>{ machi } { machiKana}</p>
+          </div>
+          <p style={{ display: errorMessage ? "block" : "none" }}>
+            { errorMessage }
+          </p>
           <button type="button" onClick={ targetClose }>
             閉じる
           </button>
